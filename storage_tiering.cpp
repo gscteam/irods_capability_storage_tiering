@@ -741,7 +741,7 @@ namespace irods {
             % _replica_number)};
 
 	rodsLog( config_.data_transfer_log_level_value,
-		"query used [%s]",qstr.c_str())
+		"query used [%s]",qstr.c_str());
         query<rsComm_t> qobj{comm_, qstr};
 
         if(qobj.size() == 0) {
@@ -769,7 +769,7 @@ namespace irods {
                                                    _source_resource);
 	    rodsLog( config_.data_transfer_log_level_value,
                 "migrate_object_to_minimum_restage_tier source replica number [%s]",
-		source_replica_number.c_str())
+		source_replica_number.c_str());
             const auto group_name = get_group_name_by_replica_number(
                                         config_.group_attribute,
                                         _object_path,
