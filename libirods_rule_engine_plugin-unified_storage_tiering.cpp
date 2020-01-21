@@ -353,7 +353,7 @@ namespace {
         const std::string& _verification_type,
 	const bool         _skip_replicate) {
 
-	if (!skip_replicate){
+	if (!_skip_replicate){
         replicate_object_to_resource(
             _comm,
             _instance_name,
