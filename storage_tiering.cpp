@@ -581,7 +581,7 @@ namespace irods {
                         }
                     }
 
-		    bool skip_replicate = false
+		    bool skip_replicate = false;
 		    if(destination_preserve_replicas) {
 			if(skip_object_in_lower_tier(
                                object_path,

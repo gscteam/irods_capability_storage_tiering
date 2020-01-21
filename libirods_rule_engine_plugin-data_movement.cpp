@@ -94,7 +94,7 @@ namespace {
         const std::string& _destination_resource,
         const std::string& _preserve_replicas,
         const std::string& _verification_type,
-	const std::bool _skip_replicate) {
+	const bool _skip_replicate) {
 
 	if (!_skip_replicate){
         apply_data_replication_policy(
