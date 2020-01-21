@@ -521,6 +521,7 @@ namespace irods {
         try {
             std::map<std::string, uint8_t> object_is_processed;
             const bool preserve_replicas = get_preserve_replicas_for_resc(_source_resource);
+            const bool destination_preserve_replicas = get_preserve_replicas_for_resc(_destination_resource);
             const auto query_limit       = get_object_limit_for_resource(_source_resource);
             const auto query_list        = get_violating_queries_for_resource(_source_resource);
 
@@ -580,6 +581,14 @@ namespace irods {
                         }
                     }
 
+		    if(destination_preserve_replicas) {
+			if(skip_object_in_lower_tier(
+                               object_path,
+                               _partial_list)) {
+				skip_replicate = true
+			}
+		    }
+
                     queue_data_movement(
                         config_.instance_name,
                         _group_name,
@@ -590,7 +599,8 @@ namespace irods {
                         _destination_resource,
                         get_verification_for_resc(_destination_resource),
                         get_preserve_replicas_for_resc(_source_resource),
-                        get_data_movement_parameters_for_resource(_source_resource));
+                        get_data_movement_parameters_for_resource(_source_resource),
+			skip_replicate);
 
                 }; // job
 
@@ -667,7 +677,8 @@ namespace irods {
         const std::string& _destination_resource,
         const std::string& _verification_type,
         const bool         _preserve_replicas,
-        const std::string& _data_movement_params) {
+        const std::string& _data_movement_params,
+	const bool         _skip_replicate) {
         if(object_has_migration_metadata_flag(_user_name, _object_path)) {
             return;
         }
@@ -686,6 +697,7 @@ namespace irods {
         rule_obj["destination-resource"]      = _destination_resource;
         rule_obj["preserve-replicas"]         = _preserve_replicas,
         rule_obj["verification-type"]         = _verification_type;
+        rule_obj["skip_replicate"]            = _skip_replicate;
         const auto delay_err = _delayExec(
                                    rule_obj.dump().c_str(),
                                    "",
@@ -802,7 +814,8 @@ namespace irods {
                 low_tier_resource_name,
                 get_verification_for_resc(low_tier_resource_name),
 		get_preserve_replicas_for_resc(_source_resource),
-                get_data_movement_parameters_for_resource(_source_resource));
+                get_data_movement_parameters_for_resource(_source_resource),
+		false);
         }
         catch(const exception& _e) {
             rodsLog(

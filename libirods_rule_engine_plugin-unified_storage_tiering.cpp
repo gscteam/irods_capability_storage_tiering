@@ -350,14 +350,17 @@ namespace {
         const std::string& _source_resource,
         const std::string& _destination_resource,
         const bool         _preserve_replicas,
-        const std::string& _verification_type) {
+        const std::string& _verification_type,
+	const bool         _skip_replicate) {
 
+	if (!skip_replicate){
         replicate_object_to_resource(
             _comm,
             _instance_name,
             _source_resource,
             _destination_resource,
             _object_path);
+	}
 
         auto verified = irods::verify_replica_for_destination_resource(
                             _comm,
@@ -693,7 +696,9 @@ irods::error exec_rule_expression(
                                         rule_obj["source-resource"],
                                         rule_obj["destination-resource"],
                                         rule_obj["preserve-replicas"],
-                                        rule_obj["verification-type"]);
+                                        rule_obj["verification-type"],
+                                        rule_obj["skip_replicate"]);
+
                                     });
 
                 irods::storage_tiering st{rei, plugin_instance_name};
