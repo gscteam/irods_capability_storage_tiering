@@ -94,9 +94,11 @@ namespace {
         const std::string& _destination_resource,
         const std::string& _preserve_replicas,
         const std::string& _verification_type,
-	const std:string&  _skip_replicate) {
+	const std::string&  _skip_replicate) {
+	bool b;
+	std::istringstream(_skip_replicate) >> b;
 
-	if (!_skip_replicate){
+	if (!b){
         apply_data_replication_policy(
                 _rei,
                 _instance_name,
