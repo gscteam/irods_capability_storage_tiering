@@ -140,7 +140,8 @@ namespace irods {
             const std::string& _destination_resource,
             const std::string& _verification_type,
             const bool         _preserve_replicas,
-            const std::string& _data_movement_params);
+            const std::string& _data_movement_params,
+            const bool         _skip_replica);
 
         void migrate_violating_data_objects(
             rsComm_t&           _comm,
