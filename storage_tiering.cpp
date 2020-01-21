@@ -500,9 +500,10 @@ namespace irods {
         if(skip) {
             rodsLog(
                 config_.data_transfer_log_level_value,
-                "irods::storage_tiering - skipping migration for [%s] in resource list [%s]",
+                "irods::storage_tiering - skipping migration for [%s] in resource list [%s] query[%s]",
                 _object_path.c_str(),
-                _partial_list.c_str());
+                _partial_list.c_str(),
+		qstr.c_str());
         }
 
         return skip;
@@ -529,7 +530,7 @@ namespace irods {
                 auto job = [&](const result_row& _results) {
                     rodsLog(
                         config_.data_transfer_log_level_value,
-                        "found %ld objects for resc [%s] with query [%s] type [%d]",
+                        "found %ld columns (1row) for resc [%s] with query [%s] type [%d]",
                         _results.size(),
                         _source_resource.c_str(),
                         violating_query_string.c_str(),
@@ -562,13 +563,22 @@ namespace irods {
 
                     object_is_processed[object_path] = 1;
 
-                    //if(preserve_replicas) {
+                    rodsLog(
+                        config_.data_transfer_log_level_value,
+                        "migrate_violating_data_objects object_path [%s] source [%s] destination [%s]  group [%s] partial_list[%s]",
+			object_path.c_str(),
+			_source_resource.c_str(),
+			_destination_resource.c_str(),
+			_group_name.c_str(),
+			_partial_list.c_str());
+
+                    if(preserve_replicas) {
                         if(skip_object_in_lower_tier(
                                object_path,
                                _partial_list)) {
                             return;
                         }
-                    //}
+                    }
 
                     queue_data_movement(
                         config_.instance_name,
