@@ -763,6 +763,7 @@ namespace irods {
 	    rodsLog( config_.data_transfer_log_level_value,
                 "migrate_object_to_minimum_restage_tier object[%s] user[%s] source_resc[%s]",
 		_object_path.c_str(),
+		_user_name.c_str(),
 		_source_resource.c_str());
             const auto source_replica_number = get_replica_number_for_resource(
                                                    _object_path,
