@@ -562,13 +562,13 @@ namespace irods {
 
                     object_is_processed[object_path] = 1;
 
-                    if(preserve_replicas) {
+                    //if(preserve_replicas) {
                         if(skip_object_in_lower_tier(
                                object_path,
                                _partial_list)) {
                             return;
                         }
-                    }
+                    //}
 
                     queue_data_movement(
                         config_.instance_name,
