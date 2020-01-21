@@ -94,7 +94,7 @@ namespace {
         const std::string& _destination_resource,
         const std::string& _preserve_replicas,
         const std::string& _verification_type,
-	const bool _skip_replicate) {
+	const std:string&  _skip_replicate) {
 
 	if (!_skip_replicate){
         apply_data_replication_policy(
@@ -177,6 +177,7 @@ irods::error exec_rule(
         const std::string destination_resource{ irods::any_to_string(*it) }; ++it;
         const std::string  preserve_replicas{ irods::any_to_string(*it) }; ++it;
         std::string verification_type{ irods::any_to_string(*it) }; ++it;
+        const std::string skip_replica{ irods::any_to_string(*it) }; ++it;
 
         apply_data_movement_policy(
             rei,
@@ -185,7 +186,8 @@ irods::error exec_rule(
             source_resource,
             destination_resource,
             preserve_replicas,
-            verification_type);
+            verification_type,
+	    skip_replica);
     }
     catch(const std::invalid_argument& _e) {
         irods::exception_to_rerror(

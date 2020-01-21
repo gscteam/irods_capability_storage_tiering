@@ -586,7 +586,7 @@ namespace irods {
 			if(skip_object_in_lower_tier(
                                object_path,
                                _partial_list)) {
-				skip_replicate = true
+				skip_replicate = true;
 			}
 		    }
 
