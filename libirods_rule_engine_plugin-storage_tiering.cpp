@@ -186,7 +186,8 @@ namespace {
         const std::string& _source_resource,
         const std::string& _destination_resource,
         const bool         _preserve_replicas,
-        const std::string& _verification_type) {
+        const std::string& _verification_type,
+	const bool         _skip_replicate) {
 
         std::list<boost::any> args;
         args.push_back(boost::any(_instance_name));
@@ -197,6 +198,7 @@ namespace {
         args.push_back(boost::any(_destination_resource));
         args.push_back(boost::any(_preserve_replicas ? std::string("true") : std::string("false")));
         args.push_back(boost::any(_verification_type));
+        args.push_back(boost::any(_skip_replicate));
         irods::invoke_policy(_rei, irods::storage_tiering::policy::data_movement, args);
 
     } // apply_data_movement_policy
@@ -512,7 +514,8 @@ irods::error exec_rule_expression(
                     rule_obj["source-resource"],
                     rule_obj["destination-resource"],
                     rule_obj["preserve-replicas"],
-                    rule_obj["verification-type"]);
+                    rule_obj["verification-type"],
+                    rule_obj["skip_replicate"]);
 
                 irods::storage_tiering st{rei, plugin_instance_name};
                 apply_tier_group_metadata_policy(
