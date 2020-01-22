@@ -95,17 +95,15 @@ namespace {
         const std::string& _preserve_replicas,
         const std::string& _verification_type,
 	const std::string&  _skip_replicate) {
-	bool b;
-	std::istringstream(_skip_replicate) >> b;
 
-	if (!b){
+	if( _skip_replicate == "false"){
         apply_data_replication_policy(
                 _rei,
                 _instance_name,
                 _object_path,
                 _source_resource,
                 _destination_resource);
-	    }
+	}
 
         apply_data_verification_policy(
                 _rei,
