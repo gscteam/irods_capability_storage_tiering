@@ -179,7 +179,7 @@ irods::error exec_rule(
         const std::string destination_resource{ irods::any_to_string(*it) }; ++it;
         const std::string  preserve_replicas{ irods::any_to_string(*it) }; ++it;
         std::string verification_type{ irods::any_to_string(*it) }; ++it;
-        const std::string skip_replica{ irods::any_to_string(*it) }; ++it;
+        const std::string skip_replicate{ irods::any_to_string(*it) }; ++it;
 
         apply_data_movement_policy(
             rei,
@@ -189,7 +189,7 @@ irods::error exec_rule(
             destination_resource,
             preserve_replicas,
             verification_type,
-	    skip_replica);
+	    skip_replicate);
     }
     catch(const std::invalid_argument& _e) {
         irods::exception_to_rerror(
