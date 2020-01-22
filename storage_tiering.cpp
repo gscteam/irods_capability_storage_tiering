@@ -590,7 +590,7 @@ namespace irods {
 				rodsLog(
 				config_.data_transfer_log_level_value,
 				"Relicate will be skipped for object [%s] from [%s] to [%s]",
-				_object_path.c_str(),
+				object_path.c_str(),
 				_source_resource.c_str(),
 				_destination_resource.c_str());
 			}

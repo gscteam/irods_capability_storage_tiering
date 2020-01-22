@@ -979,5 +979,65 @@ class TestStorageTieringPluginMultiGroupRestage(ResourceBase, unittest.TestCase)
                 admin_session.assert_icommand('irm -f ' + filename)
 
 
+class TestStorageTieringPluginDestinationPreservereplica(ResourceBase, unittest.TestCase):
+    def setUp(self):
+        super(TestStorageTieringPluginMultiGroupRestage, self).setUp()
+        with session.make_session_for_existing_admin() as admin_session:
+            admin_session.assert_icommand('iqdel -a')
+            admin_session.assert_icommand('iadmin mkresc ufs0 unixfilesystem '+test.settings.HOSTNAME_1 +':/tmp/irods/ufs0', 'STDOUT_SINGLELINE', 'unixfilesystem')
+            admin_session.assert_icommand('iadmin mkresc ufs1 unixfilesystem '+test.settings.HOSTNAME_1 +':/tmp/irods/ufs1', 'STDOUT_SINGLELINE', 'unixfilesystem')
+
+            admin_session.assert_icommand('imeta add -R ufs0 irods::storage_tiering::group example_group 0')
+            admin_session.assert_icommand('imeta add -R ufs1 irods::storage_tiering::group example_group 1')
+            admin_session.assert_icommand('imeta add -R ufs1 irods::storage_tiering::preserve_replicas true')
+
+            admin_session.assert_icommand('imeta add -R ufs0 irods::storage_tiering::time 5')
+            admin_session.assert_icommand('imeta add -R ufs0 irods::storage_tiering::minimum_delay_time_in_seconds 1')
+            admin_session.assert_icommand('imeta add -R ufs0 irods::storage_tiering::maximum_delay_time_in_seconds 2')
+
+
+    def tearDown(self):
+        super(TestStorageTieringPluginMultiGroupRestage, self).tearDown()
+        with session.make_session_for_existing_admin() as admin_session:
+
+            admin_session.assert_icommand('iadmin rmresc ufs0')
+            admin_session.assert_icommand('iadmin rmresc ufs1')
+            admin_session.assert_icommand('iadmin rum')
+
+    def test_put_and_get(self):
+        with storage_tiering_configured():
+            IrodsController().restart()
+            with session.make_session_for_existing_admin() as admin_session:
+                filename = 'test_put_file'
+                filepath  = lib.create_local_testfile(filename)
+                admin_session.assert_icommand('iput -R ufs0 ' + filename)
+                admin_session.assert_icommand('ils -L ', 'STDOUT_SINGLELINE', 'ufs0')
+                sleep(10)
+
+                #in archive so let's get the info to compare
+            with session.make_session_for_existing_admin() as admin_session:
+                file1 = admin_session.data_objects.get('/tempZone/home/'+admin_session.username+'/'+filename)
+                f1_ct = file1.create_time
+                f1_mt = file1.modification_time
+                f1_rpn = file1.replica_number
+                #f1_cheksum = file1.checksum
+
+                
+                # test restage to tier 0
+            with session.make_session_for_existing_admin() as admin_session:
+                admin_session.assert_icommand('iget ' + filename + ' - ', 'STDOUT_SINGLELINE', 'TESTFILE')
+                admin_session.assert_icommand('ils -L ', 'STDOUT_SINGLELINE', 'ufs1')
+                sleep(20)
+                #violation again should trim usf0 without replicate usf1
+                file2 = admin_session.data_objects.get('/tempZone/home/'+admin_session.username+'/'+filename)
+                f2_ct = file1.create_time
+                f2_mt = file1.modification_time
+                f2_rpn = file1.replica_number
+                self.assertTrue(f1_ct == f2_ct, msg='file creation time:{}'.format(f2_ct))
+                self.assertTrue(f1_mt == f2_mt, msg='file modification time:{}'.format(f2_mt))
+                self.assertTrue(f1_ct == f2_rpn, msg='file replica number time:{}'.format(f2_rpn))
+
+
+                admin_session.assert_icommand('irm -f ' + filename)
 
 
