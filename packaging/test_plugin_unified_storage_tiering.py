@@ -997,7 +997,7 @@ class TestStorageTieringPluginDestinationPreservereplica(ResourceBase, unittest.
 
 
     def tearDown(self):
-        super(TestStorageTieringPluginMultiGroupRestage, self).tearDown()
+        super(TestStorageTieringPluginDestinationPreservereplica, self).tearDown()
         with session.make_session_for_existing_admin() as admin_session:
 
             admin_session.assert_icommand('iadmin rmresc ufs0')
