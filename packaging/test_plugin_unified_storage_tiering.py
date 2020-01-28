@@ -981,7 +981,7 @@ class TestStorageTieringPluginMultiGroupRestage(ResourceBase, unittest.TestCase)
 
 class TestStorageTieringPluginDestinationPreservereplica(ResourceBase, unittest.TestCase):
     def setUp(self):
-        super(TestStorageTieringPluginMultiGroupRestage, self).setUp()
+        super(TestStorageTieringPluginDestinationPreservereplica, self).setUp()
         with session.make_session_for_existing_admin() as admin_session:
             admin_session.assert_icommand('iqdel -a')
             admin_session.assert_icommand('iadmin mkresc ufs0 unixfilesystem '+test.settings.HOSTNAME_1 +':/tmp/irods/ufs0', 'STDOUT_SINGLELINE', 'unixfilesystem')
